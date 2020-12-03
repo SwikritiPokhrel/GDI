@@ -96,7 +96,7 @@ namespace GPLA
         private void hELPToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("To execute the program\n" +
-    "draw 'circle 150 150'\n" +
+    "draw 'circle 15'\n" +
     "'move 150 150'\n" +
     "'color red 3'\n" +
     "'fill on' to fill color");
