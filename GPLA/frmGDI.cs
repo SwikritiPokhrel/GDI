@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 namespace GPLA
 {
+    /// <summary>
+    /// frmGDI class inherits from the base class Form
+    /// </summary>
     public partial class frmGDI : Form
     {
 
@@ -33,9 +36,14 @@ namespace GPLA
        
         int moveX, moveY; //axis
         int counter;
-        int thickness; 
-        
+        int thickness;
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">reference object</param>
+        /// <param name="e">event data</param>
         private void FrmGPLA_Load(object sender, EventArgs e)
         {
             circle = new Circle(); //creates new circle
@@ -83,8 +91,12 @@ namespace GPLA
 
         }
 
-     
-     
+
+     /// <summary>
+     /// Save commands into text file
+     /// </summary>
+     /// <param name="sender">reference object</param>
+     /// <param name="e">event data</param>
         private void sAVEToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -102,6 +114,11 @@ namespace GPLA
     "'fill on' to fill color");
         }
 
+        private void rtxt_code_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void lOADToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -110,7 +127,11 @@ namespace GPLA
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //opens diaglog box when button click to load the code.
@@ -123,7 +144,7 @@ namespace GPLA
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("To execute the program\n" +
-    "draw 'circle 150 150'\n" +
+    "draw 'circle 150 '\n" +
     "'move 150 150'\n" +
     "'color red 3'\n" +
     "'fill on' to fill color");
@@ -134,6 +155,13 @@ namespace GPLA
             actionCmd = txt_ActionCmd.Text;
             String program; //string to hold textarea info
             String[] words; //words of the individual program
+            String[] lines = rtxt_code.Text.Trim().ToLower().Split(new String[] { Environment.NewLine },
+                        StringSplitOptions.None);
+            foreach(string line in lines)
+            {
+                //c1.cjec(line);
+                //c1.cjec(line);
+            }
             switch (actionCmd)
             {
                 case "run":
@@ -165,9 +193,21 @@ namespace GPLA
                             words = code_line.Split(code_delimiters, StringSplitOptions.RemoveEmptyEntries); //holds invididuals code line
 
                             //condition to check if "draw" then
-                            
-                                counter += 1;
 
+                            counter += 1;
+
+                            if (code_line.Contains("circle") || code_line.Contains("rectangle") || code_line.Contains("triangle"))
+                            {
+
+                            }
+                            else 
+                            {
+                                MessageBox.Show("To execute the program\n" +
+    "draw 'circle 150 '\n" +
+    "'move 150 150'\n" +
+    "'color red 3'\n" +
+    "'fill on' to fill color");
+                            }
                                 if (words[0] == "circle") 
                                 {
                                     if (!(words.Length == 2))
@@ -177,15 +217,7 @@ namespace GPLA
                                     }
                                     else
                                     {
-                                        if (circleObjects.Exists(x => x.getX() == moveX && x.getY() == moveY
-                                        && x.getRadius() == Convert.ToInt32(words[1])) == true)
-                                     
-                                        {
-                                            console_text += "!!circle object exists with given parameters!!\n\n";
-
-                                        }
-                                        else
-                                        {//if not exists then creates new circle and add to circleObjects and draws circle
+                                        
                                             Circle circle = new Circle();
                                             circle.setX(moveX);
                                             circle.setY(moveY);
@@ -195,9 +227,10 @@ namespace GPLA
                                             circleObjects.Add(circle);
                                             drawCircle = true;
                                             console_text += "Adding new circle\n\n";
-                                        }
+                                        
                                     }
                                 }
+                           
 
                                 if (words[0].Equals("drawto"))
                                 {
@@ -282,7 +315,7 @@ namespace GPLA
                                     fill = false;
                                 }
                             }
-                            if (words[0] == "move") // condition to check if "move" then
+                            if (words[0] == "moveto") // condition to check if "move" then
                             {
                                 if (Convert.ToInt32(words[1]) == pbOutput.Location.X &&
                                     Convert.ToInt32(words[2]) == pbOutput.Location.Y)//checks if cursor is in different position

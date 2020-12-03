@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AbstractFactory.cs" />
     <Compile Include="Circle.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="FactoryProducer.cs" />
     <Compile Include="FactoryProducerDefination.cs" />
     <Compile Include="frmGDI.cs">

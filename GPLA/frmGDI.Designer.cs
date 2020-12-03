@@ -29,24 +29,24 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.panel_output = new System.Windows.Forms.Panel();
+            this.pbOutput = new System.Windows.Forms.PictureBox();
             this.txt_ActionCmd = new System.Windows.Forms.TextBox();
             this.btn_run = new System.Windows.Forms.Button();
             this.rtxt_code = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.panel_output = new System.Windows.Forms.Panel();
-            this.pbOutput = new System.Windows.Forms.PictureBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.sAVEToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.lOADToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.hELPToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.panel1.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
             this.panel_output.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbOutput)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -66,6 +66,63 @@
             this.panel1.Size = new System.Drawing.Size(1554, 842);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // linkLabel3
+            // 
+            this.linkLabel3.AutoSize = true;
+            this.linkLabel3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel3.LinkColor = System.Drawing.Color.Black;
+            this.linkLabel3.Location = new System.Drawing.Point(143, 91);
+            this.linkLabel3.Name = "linkLabel3";
+            this.linkLabel3.Size = new System.Drawing.Size(164, 37);
+            this.linkLabel3.TabIndex = 18;
+            this.linkLabel3.TabStop = true;
+            this.linkLabel3.Text = "TextArea :";
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel2.LinkColor = System.Drawing.Color.Black;
+            this.linkLabel2.Location = new System.Drawing.Point(143, 561);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(184, 37);
+            this.linkLabel2.TabIndex = 17;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "Command :";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel1.Location = new System.Drawing.Point(805, 76);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(150, 42);
+            this.linkLabel1.TabIndex = 16;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Output :";
+            // 
+            // panel_output
+            // 
+            this.panel_output.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.panel_output.Controls.Add(this.pbOutput);
+            this.panel_output.Location = new System.Drawing.Point(810, 128);
+            this.panel_output.Margin = new System.Windows.Forms.Padding(4);
+            this.panel_output.Name = "panel_output";
+            this.panel_output.Size = new System.Drawing.Size(568, 646);
+            this.panel_output.TabIndex = 7;
+            this.panel_output.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel_output_Paint);
+            // 
+            // pbOutput
+            // 
+            this.pbOutput.ErrorImage = null;
+            this.pbOutput.Location = new System.Drawing.Point(6, 6);
+            this.pbOutput.Margin = new System.Windows.Forms.Padding(6);
+            this.pbOutput.Name = "pbOutput";
+            this.pbOutput.Size = new System.Drawing.Size(10, 10);
+            this.pbOutput.TabIndex = 7;
+            this.pbOutput.TabStop = false;
+            this.pbOutput.Click += new System.EventHandler(this.pbOutput_Click);
             // 
             // txt_ActionCmd
             // 
@@ -97,6 +154,7 @@
             this.rtxt_code.Size = new System.Drawing.Size(509, 349);
             this.rtxt_code.TabIndex = 1;
             this.rtxt_code.Text = "";
+            this.rtxt_code.TextChanged += new System.EventHandler(this.rtxt_code_TextChanged);
             // 
             // menuStrip1
             // 
@@ -109,91 +167,34 @@
             this.hELPToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1554, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1554, 40);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // panel_output
-            // 
-            this.panel_output.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.panel_output.Controls.Add(this.pbOutput);
-            this.panel_output.Location = new System.Drawing.Point(810, 128);
-            this.panel_output.Margin = new System.Windows.Forms.Padding(4);
-            this.panel_output.Name = "panel_output";
-            this.panel_output.Size = new System.Drawing.Size(568, 646);
-            this.panel_output.TabIndex = 7;
-            this.panel_output.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel_output_Paint);
-            // 
-            // pbOutput
-            // 
-            this.pbOutput.ErrorImage = null;
-            this.pbOutput.Location = new System.Drawing.Point(6, 6);
-            this.pbOutput.Margin = new System.Windows.Forms.Padding(6);
-            this.pbOutput.Name = "pbOutput";
-            this.pbOutput.Size = new System.Drawing.Size(10, 10);
-            this.pbOutput.TabIndex = 7;
-            this.pbOutput.TabStop = false;
-            this.pbOutput.Click += new System.EventHandler(this.pbOutput_Click);
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkLabel1.Location = new System.Drawing.Point(805, 76);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(150, 42);
-            this.linkLabel1.TabIndex = 16;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Output :";
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkLabel2.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel2.Location = new System.Drawing.Point(143, 561);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(184, 37);
-            this.linkLabel2.TabIndex = 17;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "Command :";
-            // 
-            // linkLabel3
-            // 
-            this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkLabel3.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel3.Location = new System.Drawing.Point(143, 91);
-            this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(164, 37);
-            this.linkLabel3.TabIndex = 18;
-            this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "TextArea :";
             // 
             // sAVEToolStripMenuItem1
             // 
             this.sAVEToolStripMenuItem1.Name = "sAVEToolStripMenuItem1";
-            this.sAVEToolStripMenuItem1.Size = new System.Drawing.Size(88, 38);
+            this.sAVEToolStripMenuItem1.Size = new System.Drawing.Size(88, 36);
             this.sAVEToolStripMenuItem1.Text = "SAVE";
             this.sAVEToolStripMenuItem1.Click += new System.EventHandler(this.sAVEToolStripMenuItem1_Click);
             // 
             // lOADToolStripMenuItem1
             // 
             this.lOADToolStripMenuItem1.Name = "lOADToolStripMenuItem1";
-            this.lOADToolStripMenuItem1.Size = new System.Drawing.Size(94, 38);
+            this.lOADToolStripMenuItem1.Size = new System.Drawing.Size(94, 36);
             this.lOADToolStripMenuItem1.Text = "LOAD";
             this.lOADToolStripMenuItem1.Click += new System.EventHandler(this.lOADToolStripMenuItem1_Click);
             // 
             // hELPToolStripMenuItem1
             // 
             this.hELPToolStripMenuItem1.Name = "hELPToolStripMenuItem1";
-            this.hELPToolStripMenuItem1.Size = new System.Drawing.Size(88, 38);
+            this.hELPToolStripMenuItem1.Size = new System.Drawing.Size(88, 36);
             this.hELPToolStripMenuItem1.Text = "HELP";
             this.hELPToolStripMenuItem1.Click += new System.EventHandler(this.hELPToolStripMenuItem1_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // frmGDI
             // 
@@ -210,10 +211,10 @@
             this.Load += new System.EventHandler(this.FrmGPLA_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.panel_output.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbOutput)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
