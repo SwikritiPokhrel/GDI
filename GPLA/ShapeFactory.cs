@@ -12,25 +12,25 @@ namespace GPLA
     public class ShapeFactory : AbstractFactory
     {
         /// <summary>
-        /// Method to get required shape
+        /// Method to get the input given by the user for shape
         /// </summary>
         /// <param name="shapeType"></param>
         /// <returns></returns>
         public override Shape getShape(String shapeType)
         {
-            if (shapeType == null)
+            if (shapeType.Equals("Triangle"))
             {
-                return null;
+                return new Polygon();
             }
 
             if (shapeType.Equals("Circle"))
             {
-                return new Circle(0, 0, 100);
+                return new Circle();
 
             }
             else if (shapeType.Equals("Rectangle"))
             {
-                return new Rectangle(0, 0, 50, 50);
+                return new Rectangle();
             }            
             return null;
         }

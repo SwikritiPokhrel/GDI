@@ -11,7 +11,13 @@ namespace GPLA
     {
         int x1, y1, x2, y2;
         Color c;
-
+        /// <summary>
+        /// Initialization of axes along with with the sides
+        /// </summary>
+        /// <param name="x1"> x-axis</param>
+        /// <param name="x2"> side1</param>
+        /// <param name="y1"> y-axis</param>
+        /// <param name="y2"> side2</param>
         public Line(int x1, int x2, int y1, int y2)
         {
             this.x1 = x1;
@@ -77,9 +83,13 @@ namespace GPLA
             this.c = c;
         }
 
-        public override void draw(Graphics g, int thickness)
+        /// <summary>
+        /// To draw the shape inside the panel
+        /// </summary>
+        /// <param name="g">Graphics</param>
+        public override void draw(Graphics g)
         {
-            Pen p = new Pen(c, thickness);
+            Pen p = new Pen(c, 3);
             g.DrawLine(p, x1, y1, x2, y2);
         }
     }

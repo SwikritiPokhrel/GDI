@@ -8,7 +8,7 @@ namespace GPLA
 {
 
     /// <summary>
-    /// Simple Factory definition class
+    /// Simple Factory definition 
     /// </summary>
     public class FactoryProducerDefination
     {

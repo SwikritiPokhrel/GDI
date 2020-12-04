@@ -13,7 +13,7 @@ namespace GPLA
     {
 
         /// <summary>
-        /// method to create factory of different type like shape, color
+        /// method to create factory of different type like shape, color, line
         /// </summary>
         /// <param name="choice"></param>
         /// <returns></returns>

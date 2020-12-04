@@ -14,6 +14,7 @@ namespace GPLA
         /// <summary>
         /// move default constructor
         /// </summary>
+        /// 
         public MoveDirection()
         {
 

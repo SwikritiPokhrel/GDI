@@ -27,7 +27,7 @@ namespace GPLA
         }
 
         /// <summary>
-        /// default circle constructor
+        /// default constructor
         /// </summary>
         public Circle()
         {
@@ -64,9 +64,9 @@ namespace GPLA
         /// draw method
         /// </summary>
         /// <param name="g"></param>
-        public override void draw(Graphics g, int thickness)
+        public override void draw(Graphics g)
         {
-            Pen p = new Pen(c, thickness);
+            Pen p = new Pen(c, 3);
             SolidBrush b = new SolidBrush(c);
             if (fill)
             {

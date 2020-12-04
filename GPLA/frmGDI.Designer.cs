@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.refresh_btn = new System.Windows.Forms.Button();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.panel_output = new System.Windows.Forms.Panel();
             this.pbOutput = new System.Windows.Forms.PictureBox();
             this.txt_ActionCmd = new System.Windows.Forms.TextBox();
-            this.btn_run = new System.Windows.Forms.Button();
             this.rtxt_code = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.sAVEToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,12 +51,12 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.refresh_btn);
             this.panel1.Controls.Add(this.linkLabel3);
             this.panel1.Controls.Add(this.linkLabel2);
             this.panel1.Controls.Add(this.linkLabel1);
             this.panel1.Controls.Add(this.panel_output);
             this.panel1.Controls.Add(this.txt_ActionCmd);
-            this.panel1.Controls.Add(this.btn_run);
             this.panel1.Controls.Add(this.rtxt_code);
             this.panel1.Controls.Add(this.menuStrip1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -66,6 +66,18 @@
             this.panel1.Size = new System.Drawing.Size(1554, 842);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // refresh_btn
+            // 
+            this.refresh_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.refresh_btn.Location = new System.Drawing.Point(286, 504);
+            this.refresh_btn.Margin = new System.Windows.Forms.Padding(6);
+            this.refresh_btn.Name = "refresh_btn";
+            this.refresh_btn.Size = new System.Drawing.Size(230, 54);
+            this.refresh_btn.TabIndex = 19;
+            this.refresh_btn.Text = "REFRESH";
+            this.refresh_btn.UseVisualStyleBackColor = true;
+            this.refresh_btn.Click += new System.EventHandler(this.refresh_btn_Click);
             // 
             // linkLabel3
             // 
@@ -84,7 +96,7 @@
             this.linkLabel2.AutoSize = true;
             this.linkLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel2.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel2.Location = new System.Drawing.Point(143, 561);
+            this.linkLabel2.Location = new System.Drawing.Point(143, 581);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(184, 37);
             this.linkLabel2.TabIndex = 17;
@@ -127,24 +139,13 @@
             // txt_ActionCmd
             // 
             this.txt_ActionCmd.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ActionCmd.Location = new System.Drawing.Point(150, 604);
+            this.txt_ActionCmd.Location = new System.Drawing.Point(150, 634);
             this.txt_ActionCmd.Margin = new System.Windows.Forms.Padding(6);
             this.txt_ActionCmd.Name = "txt_ActionCmd";
             this.txt_ActionCmd.Size = new System.Drawing.Size(509, 56);
             this.txt_ActionCmd.TabIndex = 14;
-            this.txt_ActionCmd.TextChanged += new System.EventHandler(this.txt_ActionCmd_TextChanged);
-            // 
-            // btn_run
-            // 
-            this.btn_run.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_run.Location = new System.Drawing.Point(286, 720);
-            this.btn_run.Margin = new System.Windows.Forms.Padding(6);
-            this.btn_run.Name = "btn_run";
-            this.btn_run.Size = new System.Drawing.Size(230, 54);
-            this.btn_run.TabIndex = 10;
-            this.btn_run.Text = "EXECUTE";
-            this.btn_run.UseVisualStyleBackColor = true;
-            this.btn_run.Click += new System.EventHandler(this.Btn_run_Click);
+            this.txt_ActionCmd.TextChanged += new System.EventHandler(this.txt_ActionCmd_TextChanged_1);
+            this.txt_ActionCmd.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_ActionCmd_KeyDown);
             // 
             // rtxt_code
             // 
@@ -167,28 +168,28 @@
             this.hELPToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1554, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(1554, 48);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // sAVEToolStripMenuItem1
             // 
             this.sAVEToolStripMenuItem1.Name = "sAVEToolStripMenuItem1";
-            this.sAVEToolStripMenuItem1.Size = new System.Drawing.Size(88, 36);
+            this.sAVEToolStripMenuItem1.Size = new System.Drawing.Size(88, 44);
             this.sAVEToolStripMenuItem1.Text = "SAVE";
             this.sAVEToolStripMenuItem1.Click += new System.EventHandler(this.sAVEToolStripMenuItem1_Click);
             // 
             // lOADToolStripMenuItem1
             // 
             this.lOADToolStripMenuItem1.Name = "lOADToolStripMenuItem1";
-            this.lOADToolStripMenuItem1.Size = new System.Drawing.Size(94, 36);
+            this.lOADToolStripMenuItem1.Size = new System.Drawing.Size(94, 44);
             this.lOADToolStripMenuItem1.Text = "LOAD";
             this.lOADToolStripMenuItem1.Click += new System.EventHandler(this.lOADToolStripMenuItem1_Click);
             // 
             // hELPToolStripMenuItem1
             // 
             this.hELPToolStripMenuItem1.Name = "hELPToolStripMenuItem1";
-            this.hELPToolStripMenuItem1.Size = new System.Drawing.Size(88, 36);
+            this.hELPToolStripMenuItem1.Size = new System.Drawing.Size(88, 44);
             this.hELPToolStripMenuItem1.Text = "HELP";
             this.hELPToolStripMenuItem1.Click += new System.EventHandler(this.hELPToolStripMenuItem1_Click);
             // 
@@ -222,7 +223,6 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btn_run;
         private System.Windows.Forms.RichTextBox rtxt_code;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
@@ -236,6 +236,7 @@
         private System.Windows.Forms.ToolStripMenuItem sAVEToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem lOADToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hELPToolStripMenuItem1;
+        private System.Windows.Forms.Button refresh_btn;
     }
 }
 

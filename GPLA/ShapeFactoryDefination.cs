@@ -40,6 +40,11 @@ namespace GPLA
             return false;
         }
 
+        /// <summary>
+        /// method to check if shape is triangle
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <returns></returns>
         public bool isTriangle(string shape)
         {
             if (shape == "triangle")

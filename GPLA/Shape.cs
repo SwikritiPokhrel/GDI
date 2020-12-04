@@ -81,9 +81,9 @@ namespace GPLA
 
 
         /// <summary>
-        /// draw method
+        /// method for running the circle
         /// </summary>
         /// <param name="g"></param>
-        public abstract void draw(Graphics g, int thickness);
+        public abstract void draw(Graphics g);
     }
 }

@@ -17,6 +17,12 @@ namespace GPLA
         {
 
         }
+        /// <summary>
+        /// declaration in list
+        /// </summary>
+        /// <param name="c">Colour</param>
+        /// <param name="fill">Shape Color Fill</param>
+        /// <param name="list">list</param>
         public void set(Color c, bool fill, params int[] list) {
             this.c = c;
             this.fill = fill;
@@ -27,10 +33,13 @@ namespace GPLA
             y_axis = list[4];
         }
 
-
-        public override void draw(Graphics g, int thickness)
+        /// <summary>
+        /// To draw the shape Triangle 
+        /// </summary>
+        /// <param name="g">graphics</param>      
+        public override void draw(Graphics g)
         {
-            Pen p = new Pen(c, thickness);
+            Pen p = new Pen(c, 3);
             SolidBrush sbs = new SolidBrush(c);
             PointF[] points = new PointF[3];
             points[0].X = x_axis;
@@ -40,7 +49,7 @@ namespace GPLA
             points[1].Y = y_axis;
 
             points[2].X = x_axis + side3;
-            points[2].Y = y_axis - side2;
+            points[2].Y = y_axis + side2;
 
             if (fill)
             {

@@ -58,11 +58,20 @@ namespace GPLA
         /// <summary>
         /// draw method
         /// </summary>
-        /// <param name="g"></param>
-        public override void draw(Graphics g, int thickness)
+        /// <param name="g">graphics</param>
+        public override void draw(Graphics g)
         {
-            Pen p = new Pen(c, thickness);
-            g.DrawRectangle(p, x, y, height, width);
+            Pen p = new Pen(c, 3);
+            SolidBrush sb = new SolidBrush(c);
+            if (fill)
+            {
+                g.FillRectangle(sb, x, y, height, width);
+            }
+            else
+            {
+                g.DrawRectangle(p, x, y, height, width);
+            }
+            
 
         }
 
