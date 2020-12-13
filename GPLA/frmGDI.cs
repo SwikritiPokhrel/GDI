@@ -17,7 +17,7 @@ namespace GPLA
     /// </summary>
     public partial class frmGDI : Form
     {
-
+        Commands cmds = new Commands();
 
         Shape shape1, shape2; //declaration 
         Validation v = new Validation();
@@ -123,10 +123,14 @@ namespace GPLA
         private void txt_ActionCmd_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Enter)
+
             {
+                e.SuppressKeyPress = true;
+
                 actionCmd = txt_ActionCmd.Text;
                 if (v.check_command(actionCmd))
                 {
+
                     String program; //string to hold textarea info
                     String[] words; //words of the individual program
                     String[] lines = rtxt_code.Text.Trim().ToLower().Split(new String[] { Environment.NewLine },
@@ -145,7 +149,7 @@ namespace GPLA
 
                                 program = rtxt_code.Text;
 
-
+                                bool simple_draw = true;
                                 char[] delimiters = new char[] { '\r', '\n' };
                                 string[] parts = program.Split(delimiters, StringSplitOptions.RemoveEmptyEntries); //holds invididuals code line
                                 console_text = "Program code: \n";
@@ -162,182 +166,73 @@ namespace GPLA
 
                                     //single code line
                                     String code_line = parts[i];
-
-                                    if (v.checkprogram_command(code_line)) { 
-
-                                    char[] code_delimiters = new char[] { ' ' };
-                                    words = code_line.Split(code_delimiters, StringSplitOptions.RemoveEmptyEntries); //holds invididuals code line
-
-                                       
-                                    //condition to check if "draw" then
-
-
                                     counter += 1;
 
-                                    if (code_line.Contains("circle") || code_line.Contains("rectangle") || code_line.Contains("triangle") || code_line.Contains("pen") || code_line.Contains("moveto") || code_line.Contains("drawto") || code_line.Contains("fill"))
+                                    if (code_line.Contains("endloop") || code_line.Contains("endif") || code_line.Contains("endmethod"))
                                     {
-                                        if (words[0] == "circle")
-                                        {
-                                            if (!(words.Length == 2))
-                                            {
-                                                MessageBox.Show("!!Please enter correct command!!");
-                                                console_text += "Correct code be like: \n e.g. draw circle 100 \n\n";
-                                            }
-                                            else
-                                            {
+                                        simple_draw = true;
+                                    }
 
-                                                Circle circle = new Circle();
-                                                circle.setX(moveX);
-                                                circle.setY(moveY);
-                                                circle.setRadius(Convert.ToInt32(words[1]));
-                                                circle.setColor(c);
-                                                circle.setFill(fill);
-                                                circleObjects.Add(circle);
-                                                drawCircle = true;
-                                                console_text += "Adding new circle\n\n";
-
-                                            }
+                                    if (simple_draw)
+                                    {
+                                        if (v.checkprogram_command(code_line)){
+                                            draw_basic(code_line);
                                         }
-                                            else
-                                            {
-                                                MessageBox.Show("please enter correct command");
-                                            }
+                                        
+                                    }
 
-                                            if (words[0].Equals("drawto"))
+                                        if ((code_line.Contains("if") && !code_line.Contains("endif")) || (code_line.Contains("loop") && code_line.Contains("for")) || code_line.Contains("method") || code_line.Contains("=") || (code_line.Contains("+") || code_line.Contains("-") || code_line.Contains("*") || code_line.Contains("/")))
                                         {
-                                            if ((words.Length != 3))
+                                            if (code_line.Contains("if"))
                                             {
-                                                MessageBox.Show("!!Please enter correct command!!");
-                                                console_text += "Correct code be like: \n e.g. drawto 100 100 \n\n";
-                                            }
-                                            else
-                                            {
-                                                Line line = new Line();
-                                                line.setColor(c);
-                                                line.setX1(moveX);
-                                                line.setY1(moveY);
-                                                line.setX2(Convert.ToInt32(words[1]));
-                                                line.setY2(Convert.ToInt32(words[2]));
-                                                lineObjects.Add(line);
-                                                drawLine = true;
-                                                console_text += "Adding new line\n\n";
-                                            }
-                                        }
-                                        if (words[0].Equals("rectangle"))
-                                        {
-                                            //MessageBox.Show(moveX.ToString());
-                                            if (!(words.Length == 3)) //extending parameter values
-                                            {
-                                                MessageBox.Show("!!Please enter correct command!!");
-                                                console_text += "Correct code be like: \n e.g. draw rectangle 100 100 \n\n";
-                                            }
-                                            else
-                                            {
-                                                if (rectangleObjects.Exists(x => x.getX() == moveX && x.getY() == moveY
-                                                && x.getHeight() == Convert.ToInt32(words[1]) && x.getWidth() ==
-                                                Convert.ToInt32(words[2])) == true)//checks if rectangle with x,y,height,width parameter exists or not
+                                            simple_draw = false;
+                                                if (v.checkprogram_command(code_line))
                                                 {
-                                                    console_text += "!!rectangle object exists with given parameters!!\n\n";
+                                                    cmds.run_if_command(code_line, lines, counter,this);
                                                 }
-                                                else
-                                                {//if not exists then creates new rectangle and add to rectangleObjects and draws rectangle
-                                                    Rectangle rect = new Rectangle();
-                                                    rect.setX(moveX);
-                                                    rect.setY(moveY);
-                                                    rect.setColor(c);
-                                                    rect.setFill(fill);
-                                                    rect.setHeight(Convert.ToInt32(words[1]));
-                                                    rect.setWidth(Convert.ToInt32(words[2]));
-                                                    rectangleObjects.Add(rect);
-                                                    drawRect = true;
-                                                    console_text += "Adding new rectangle\n\n";
+
+                                            }
+                                            else if ((code_line.Contains("loop") && code_line.Contains("for")))
+                                            {
+                                            simple_draw = false;
+                                            if (v.checkprogram_command(code_line))
+                                                {
+                                                    cmds.run_loop_command(code_line, lines, counter, this);
+                                                }
+
+                                            }
+                                            else if (code_line.Contains("method"))
+                                            {
+                                            simple_draw = false;
+                                            if (v.checkprogram_command(code_line))
+                                                {
+                                                    cmds.run_method_command(code_line, lines, counter);
+                                                }
+
+                                            }
+                                            else if((code_line.Contains("+") || code_line.Contains("-") || code_line.Contains("*") || code_line.Contains("/")))
+                                            {
+                                                if (v.checkprogram_command(code_line))
+                                                {
+                                                    cmds.runVariableOperation(code_line);
+                                                }
+                                            }
+                                            else if (code_line.Contains("="))
+                                            {
+                                                if (v.checkprogram_command(code_line))
+                                                {
+                                                    cmds.run_variable_command(code_line);
+                                                }
+                                            }
+                                            else if(code_line.Contains("(") && code_line.Contains(")"))
+                                            {
+                                                if (v.checkprogram_command(code_line))
+                                                {
+                                                    cmds.run_method_call(code_line, this);
                                                 }
                                             }
                                         }
-
-                                        if (words[0].Equals("triangle"))
-                                        {
-                                            //MessageBox.Show(moveX.ToString());
-                                            if (!(words.Length == 4)) //extending parameter values
-                                            {
-                                                MessageBox.Show("!!Please enter correct command!! ");
-                                                console_text += "Correct code be like: \n e.g. draw triagnle 100 100 100  \n\n";
-                                            }
-                                            else
-                                            {
-
-                                                //if not exists then creates new polygon and add to polygon Objects and draws polygon
-                                                Polygon poly = new Polygon();
-                                                poly.set(c, fill, Convert.ToInt32(words[1]), Convert.ToInt32(words[2]), Convert.ToInt32(words[3]), moveX, moveY);
-                                                polygonObjects.Add(poly);
-                                                drawPolgon = true;
-                                                console_text += "Adding new Triangle\n\n";
-
-                                            }
-                                        }
-
-                                        if (words[0].Equals("fill"))
-                                        {
-                                            if (words[1].Equals("on"))
-                                            {
-                                                fill = true;
-                                            }
-                                            else if (words[1].Equals("off"))
-                                            {
-                                                fill = false;
-                                            }
-                                        }
-                                        if (words[0] == "moveto") // condition to check if "move" then
-                                        {
-                                            if (Convert.ToInt32(words[1]) == pbOutput.Location.X &&
-                                                Convert.ToInt32(words[2]) == pbOutput.Location.Y)//checks if cursor is in different position
-                                            {
-                                                //MessageBox.Show("don't move");
-                                                console_text += "Its in requested position\n\n";
-                                            }
-                                            else
-                                            {
-                                                moveX = Convert.ToInt32(words[1]);
-                                                moveY = Convert.ToInt32(words[2]);
-                                                console_text += "X=" + moveX + "\n" + "Y=" + moveY + "\n\n";
-                                            }
-                                        }
-                                        if (words[0] == "pen")
-                                        {
-
-
-                                            if (words[1] == "red")
-                                            {
-                                                c = Color.Red;
-                                                console_text += "Pen is of red color\n\n";
-                                            }
-                                            else if (words[1] == "blue")
-                                            {
-                                                c = Color.Blue;
-                                                console_text += "Pen is of blue color\n\n";
-                                            }
-                                            else if (words[1] == "yellow")
-                                            {
-                                                c = Color.Yellow;
-                                                console_text += "Pen is of yellow color\n\n";
-                                            }
-                                            else
-                                            {
-                                                c = Color.Green;
-                                                console_text += "Pen is of green color\n\n";
-                                            }
-                                        }
-                                    }
-                                    
-                                }
-                                    else
-                                    {
-                                        MessageBox.Show("To execute the program\n" +
-            "draw 'circle 15' or 'triangle 20 20 20'  or 'rectangle 20 40' \n" +
-            "'moveto 150 150' for changing the position\n" +
-            "'pen red' to change the colour\n" +
-            "'fill on' to fill color to the shapes");
-                                    }
+                                        
                                 }
                             }
                             catch (IndexOutOfRangeException ex)
@@ -391,6 +286,173 @@ namespace GPLA
                 
             }
         }
+
+        public void draw_basic(string code_line)
+        {            
+            string[] words = code_line.Trim().Split(' ');
+            if (code_line.Contains("circle") || code_line.Contains("rectangle") || code_line.Contains("triangle") || code_line.Contains("pen") || code_line.Contains("moveto") || code_line.Contains("drawto") || code_line.Contains("fill"))
+            {
+
+                if (words[0] == "circle")
+                {
+                    if (!(words.Length == 2))
+                    {
+                        MessageBox.Show("!!Please enter correct command!!");
+                        console_text += "Correct code be like: \n e.g. draw circle 100 \n\n";
+                    }
+                    else
+                    {
+
+                        Circle circle = new Circle();
+                        circle.setX(moveX);
+                        circle.setY(moveY);
+                        circle.setRadius(Convert.ToInt32(words[1]));
+                        circle.setColor(c);
+                        circle.setFill(fill);
+                        circleObjects.Add(circle);
+                        drawCircle = true;
+                        console_text += "Adding new circle\n\n";
+
+                    }
+                }
+
+                if (words[0].Equals("drawto"))
+                {
+                    if ((words.Length != 3))
+                    {
+                        MessageBox.Show("!!Please enter correct command!!");
+                        console_text += "Correct code be like: \n e.g. drawto 100 100 \n\n";
+                    }
+                    else
+                    {
+                        Line line = new Line();
+                        line.setColor(c);
+                        line.setX1(moveX);
+                        line.setY1(moveY);
+                        line.setX2(Convert.ToInt32(words[1]));
+                        line.setY2(Convert.ToInt32(words[2]));
+                        lineObjects.Add(line);
+                        drawLine = true;
+                        console_text += "Adding new line\n\n";
+                    }
+                }
+                if (words[0].Equals("rectangle"))
+                {
+                    //MessageBox.Show(moveX.ToString());
+                    if (!(words.Length == 3)) //extending parameter values
+                    {
+                        MessageBox.Show("!!Please enter correct command!!");
+                        console_text += "Correct code be like: \n e.g. draw rectangle 100 100 \n\n";
+                    }
+                    else
+                    {
+                        if (rectangleObjects.Exists(x => x.getX() == moveX && x.getY() == moveY
+                        && x.getHeight() == Convert.ToInt32(words[1]) && x.getWidth() ==
+                        Convert.ToInt32(words[2])) == true)//checks if rectangle with x,y,height,width parameter exists or not
+                        {
+                            console_text += "!!rectangle object exists with given parameters!!\n\n";
+                        }
+                        else
+                        {//if not exists then creates new rectangle and add to rectangleObjects and draws rectangle
+                            Rectangle rect = new Rectangle();
+                            rect.setX(moveX);
+                            rect.setY(moveY);
+                            rect.setColor(c);
+                            rect.setFill(fill);
+                            rect.setHeight(Convert.ToInt32(words[1]));
+                            rect.setWidth(Convert.ToInt32(words[2]));
+                            rectangleObjects.Add(rect);
+                            drawRect = true;
+                            console_text += "Adding new rectangle\n\n";
+                        }
+                    }
+                }
+
+                if (words[0].Equals("triangle"))
+                {
+                    //MessageBox.Show(moveX.ToString());
+                    if (!(words.Length == 4)) //extending parameter values
+                    {
+                        MessageBox.Show("!!Please enter correct command!! ");
+                        console_text += "Correct code be like: \n e.g. draw triagnle 100 100 100  \n\n";
+                    }
+                    else
+                    {
+
+                        //if not exists then creates new polygon and add to polygon Objects and draws polygon
+                        Polygon poly = new Polygon();
+                        poly.set(c, fill, Convert.ToInt32(words[1]), Convert.ToInt32(words[2]), Convert.ToInt32(words[3]), moveX, moveY);
+                        polygonObjects.Add(poly);
+                        drawPolgon = true;
+                        console_text += "Adding new Triangle\n\n";
+
+                    }
+                }
+
+                if (words[0].Equals("fill"))
+                {
+                    if (words[1].Equals("on"))
+                    {
+                        fill = true;
+                    }
+                    else if (words[1].Equals("off"))
+                    {
+                        fill = false;
+                    }
+                }
+                if (words[0] == "moveto") // condition to check if "move" then
+                {
+                    if (Convert.ToInt32(words[1]) == pbOutput.Location.X &&
+                        Convert.ToInt32(words[2]) == pbOutput.Location.Y)//checks if cursor is in different position
+                    {
+                        //MessageBox.Show("don't move");
+                        console_text += "Its in requested position\n\n";
+                    }
+                    else
+                    {
+                        moveX = Convert.ToInt32(words[1]);
+                        moveY = Convert.ToInt32(words[2]);
+                        console_text += "X=" + moveX + "\n" + "Y=" + moveY + "\n\n";
+                    }
+                }
+                if (words[0] == "pen")
+                {
+
+
+                    if (words[1] == "red")
+                    {
+                        c = Color.Red;
+                        console_text += "Pen is of red color\n\n";
+                    }
+                    else if (words[1] == "blue")
+                    {
+                        c = Color.Blue;
+                        console_text += "Pen is of blue color\n\n";
+                    }
+                    else if (words[1] == "yellow")
+                    {
+                        c = Color.Yellow;
+                        console_text += "Pen is of yellow color\n\n";
+                    }
+                    else
+                    {
+                        c = Color.Green;
+                        console_text += "Pen is of green color\n\n";
+                    }
+                }
+            }
+
+        
+                                    else
+                                    {
+                                        MessageBox.Show("To execute the program\n" +
+            "draw 'circle 15' or 'triangle 20 20 20'  or 'rectangle 20 40' \n" +
+            "'moveto 150 150' for changing the position\n" +
+            "'pen red' to change the colour\n" +
+            "'fill on' to fill color to the shapes");
+                                    }
+}
+
 
         /// <summary>
         /// helos to know about the application

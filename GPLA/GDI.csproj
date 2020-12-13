@@ -54,7 +54,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractFactory.cs" />
+    <Compile Include="check.cs" />
     <Compile Include="Circle.cs" />
+    <Compile Include="Commands.cs" />
+    <Compile Include="ConditionController.cs" />
     <Compile Include="FactoryProducer.cs" />
     <Compile Include="FactoryProducerDefination.cs" />
     <Compile Include="frmGDI.cs">
@@ -72,7 +75,10 @@
     <Compile Include="Shape.cs" />
     <Compile Include="ShapeFactory.cs" />
     <Compile Include="ShapeFactoryDefination.cs" />
+    <Compile Include="User_defined_exception.cs" />
     <Compile Include="Validation.cs" />
+    <Compile Include="VariableDefination.cs" />
+    <Compile Include="Variables.cs" />
     <EmbeddedResource Include="frmGDI.resx">
       <DependentUpon>frmGDI.cs</DependentUpon>
     </EmbeddedResource>
