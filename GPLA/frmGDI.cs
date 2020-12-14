@@ -183,6 +183,17 @@ namespace GPLA
                                             {
                                                 draw_basic(code_line);
                                             }
+                                            else
+                                            {
+                                                MessageBox.Show("Command: ( "+code_line+ " )is not valid\n" + 
+                                                    "To execute the program\n" +
+    "draw 'circle 15' or 'triangle 20 20 20'  \n" +
+    "or 'rectangle 20 40' or 'polygon 30 30 30 30 30 30 30 30' \n" +
+    "'moveto 150 150' for changing the position\n" +
+    "'pen red' to change the colour\n" +
+    "'fill on' to fill color to the shapes");
+                                                 
+                                            }
 
                                         }
                                     }
@@ -603,7 +614,8 @@ namespace GPLA
         private void hELPToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             MessageBox.Show("To execute the program\n" +
-    "draw 'circle 15' or 'triangle 20 20 20'  or 'rectangle 20 40' \n" +
+    "draw 'circle 15' or 'triangle 20 20 20'\n" +
+    "  or 'rectangle 20 40' or polygon 30 30 30 30 30 30 30 30 \n" +
     "'moveto 150 150' for changing the position\n" +
     "'pen red' to change the colour\n" +
     "'fill on' to fill color to the shapes");
