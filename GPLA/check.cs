@@ -88,7 +88,7 @@ namespace GPLA
             }
         }
 
-
+        /// <summary>
         /// check variable operations validity
         /// </summary>
         /// <param name="cmd">command to be checked</param>

@@ -15,10 +15,7 @@ namespace GPLA
     /// </summary>
     public class InvalidVariableNameException : Exception
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
+      
         public InvalidVariableNameException(string message) : base(message)
         {
 

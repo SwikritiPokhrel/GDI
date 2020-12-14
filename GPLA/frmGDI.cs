@@ -120,6 +120,16 @@ namespace GPLA
 
         }
 
+        private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+        }
+
+        private void rtxt_code_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
         private void rtxt_code_TextChanged(object sender, EventArgs e)
         {
 
