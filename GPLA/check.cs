@@ -47,7 +47,48 @@ namespace GPLA
             errors.Clear();
         }
 
-      ///
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public bool check_variable(string command)
+        {
+            command = Regex.Replace(command, @"\s+", "");
+            string variable_name = command.Split('=')[0];
+            string first_char = variable_name.Substring(0, 1);
+            try
+            {
+                if (Regex.IsMatch(first_char, @"^[a-zA-Z]+$"))
+                {
+                    if (Regex.IsMatch(variable_name, @"^[a-zA-Z0-9]+$"))
+                    {
+                        int.Parse(command.Split('=')[1]);
+                        return true;
+                    }
+                    else
+                    {
+                        throw new InvalidVariableNameException("Variable name is invalid");
+                    }
+                }
+                else
+                {
+                    throw new InvalidVariableNameException("Variable name should start with alphabet");
+                }
+            }
+            catch (InvalidVariableNameException e)
+            {
+                errors.Add(e.Message);
+                return false;
+            }
+            catch (FormatException)
+            {
+                errors.Add("Variable value should be in number format.");
+                return false;
+            }
+        }
+
+
         /// check variable operations validity
         /// </summary>
         /// <param name="cmd">command to be checked</param>
@@ -80,7 +121,7 @@ namespace GPLA
         /// </summary>
         /// <param name="command">command to be checked</param>
         /// <returns>true if command is valid else false</returns>
-        public bool check_if_command(string command)
+        public bool check_if_command(string command, frmGDI fm)
         {
             command = Regex.Replace(command, @"\s+", "");
             string[] command_parts = command.Trim().Split(new string[] { "(" }, StringSplitOptions.RemoveEmptyEntries);
@@ -141,11 +182,13 @@ namespace GPLA
                 }
             }
             catch (InvalidCommandException e)
-            {                
+            {
+                MessageBox.Show(e.Message);
                 return false;
             }
             catch (InvalidParameterException e)
-            {                
+            {
+                MessageBox.Show(e.Message);
                 return false;
             }
         }
@@ -173,6 +216,7 @@ namespace GPLA
       },
 
             StringSplitOptions.RemoveEmptyEntries);
+            string[] loopCondition = { };
             try
             {
                 if (!check_cmd[0].Equals("loop"))
@@ -185,9 +229,15 @@ namespace GPLA
                     throw new InvalidCommandException("Invalid Loop Command Syntax");
                 }
 
+                loopCondition = check_cmd[1].Split(new string[] { "<=", ">=", "<", ">" }, StringSplitOptions.RemoveEmptyEntries);
+                if (loopCondition.Length == 1)
+                {
+                    throw new InvalidParameterException("Invalid loop statement. Operator should be <= or => or < or >");
+                }
+
                 if (!Regex.IsMatch(check_cmd[1], @"^[0-9]+$"))
                 {
-                    string variable_name = check_cmd[1];
+                    string variable_name = loopCondition[0].ToLower().Trim();
                     if (!variable.ContainsKey(variable_name))
                     {
                         throw new VariableNotFoundException("Variable: " + variable_name + " not found.");
@@ -196,12 +246,17 @@ namespace GPLA
             }
             catch (InvalidCommandException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
             catch (VariableNotFoundException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
+                return false;
+            }
+            catch (InvalidParameterException e)
+            {
+                MessageBox.Show(e.Message);
                 return false;
             }
             return true;
@@ -214,14 +269,13 @@ namespace GPLA
         /// <returns>true if command is valid else false</returns>
         public bool check_method(string command)
         {
-
             string[] command_parts = command.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             string parameter_inside_method = "";
             try
             {
                 if (command_parts[0].Equals("method"))
                 {
-                    if (command_parts.Length == 3) //method 1asdc ()
+                    if (command_parts.Length == 3)
                     {
                         if (Regex.IsMatch(command_parts[1], @"^[a-zA-Z0-9]+$"))
                         {
@@ -273,22 +327,22 @@ namespace GPLA
                 }
                 else
                 {
-                    throw new InvalidCommandException("Invalid Command Name");
+                    throw new InvalidCommandException("Invalid method Command Name");
                 }
             }
             catch (InvalidCommandException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
             catch (InvalidMethodNameException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
             catch (InvalidParameterException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
 
@@ -313,7 +367,15 @@ namespace GPLA
             }
             else
             {
-                parameter_count = parameter_inside_method.Length;
+                if (parameter_inside_method.Length > 0)
+                {
+                    parameter_count = 1;
+                }
+                else
+                {
+                    parameter_count = 0;
+                }
+
             }
 
             string signature = methodname + "," + parameter_count;
@@ -332,9 +394,9 @@ namespace GPLA
             }
             catch (MethodNotFoundException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
-        }            
+        }
     }
 }

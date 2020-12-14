@@ -4,17 +4,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace GPLA
 {
-    class Polygon : Shape
+    class Triangle : Shape
     {
-        int[] points;
+        int side1, side2, side3, x_axis, y_axis;
         Color c;
         bool fill;
 
-        public Polygon()
+        public Triangle()
         {
 
         }
@@ -28,8 +27,11 @@ namespace GPLA
         {
             this.c = c;
             this.fill = fill;
-            points = list;
-
+            side1 = list[0];
+            side2 = list[1];
+            side3 = list[2];
+            x_axis = list[3];
+            y_axis = list[4];
         }
 
         /// <summary>
@@ -40,21 +42,23 @@ namespace GPLA
         {
             Pen p = new Pen(c, 3);
             SolidBrush sbs = new SolidBrush(c);
-            PointF[] new_point = new PointF[50];
-            int point_position = 0;
+            PointF[] points = new PointF[3];
+            points[0].X = x_axis;
+            points[0].Y = y_axis;
 
-            for (int i = 0; i < points.Length - 1; i += 2)
-            {
-                new_point[point_position] = new Point(points[i], points[i + 1]);
-                point_position++;
-            }
+            points[1].X = x_axis + side1;
+            points[1].Y = y_axis;
+
+            points[2].X = x_axis + side3;
+            points[2].Y = y_axis + side2;
+
             if (fill)
             {
-                g.FillPolygon(sbs, new_point);
+                g.FillPolygon(sbs, points);
             }
             else
             {
-                g.DrawPolygon(p, new_point);
+                g.DrawPolygon(p, points);
             }
 
         }

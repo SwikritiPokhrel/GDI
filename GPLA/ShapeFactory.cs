@@ -20,7 +20,7 @@ namespace GPLA
         {
             if (shapeType.Equals("Triangle"))
             {
-                return new Polygon();
+                return new Triangle();
             }
 
             if (shapeType.Equals("Circle"))
@@ -31,7 +31,11 @@ namespace GPLA
             else if (shapeType.Equals("Rectangle"))
             {
                 return new Rectangle();
-            }            
+            }
+            else if (shapeType.Equals("Polygon"))
+            {
+                return new Polygon();
+            }
             return null;
         }
     }

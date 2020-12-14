@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace GPLA
 {
@@ -19,24 +20,30 @@ namespace GPLA
     {
         Commands cmds = new Commands();
 
-        Shape shape1, shape2; //declaration 
+        Shape shape1, shape2, shape3; //declaration 
         Validation v = new Validation();
         //list 
         List<Circle> circleObjects;
         List<Rectangle> rectangleObjects;
         List<Line> lineObjects;
+        List<Triangle> triangleobjects;
         List<Polygon> polygonObjects;
         List<MoveDirection> moveObjects;
 
 
         Circle circle; //declaration 
-        Rectangle rectangle; 
+        Rectangle rectangle;
+        Polygon polygon;
         Line line;
-        Boolean drawCircle, drawRect, drawPolgon, drawLine; //boolean to check whether to make objects or not
-       
+        Boolean drawCircle, drawRect, drawPolygon, drawLine, drawTriangle; //boolean to check whether to make objects or not
+
+        static IDictionary<string, int> variable = new Dictionary<string, int>();
+
+        ArrayList comms = new ArrayList() { "moveto", "drawto", "pen", "fill", "circle", "rectangle", "triangle", "polygon" };
+
         int moveX, moveY; //axis
-        int counter;
-        
+        int counter = 0;
+
 
 
         /// <summary>
@@ -48,6 +55,7 @@ namespace GPLA
         {
             circle = new Circle(); //creates new circle
             rectangle = new Rectangle(); //creates new rectangle
+            polygon = new Polygon();
 
             circleObjects = new List<Circle>(); //creates array of new circle objects
             rectangleObjects = new List<Rectangle>(); //creates array of new rectangle objects
@@ -55,10 +63,11 @@ namespace GPLA
 
             moveObjects = new List<MoveDirection>(); //creates array of new move objects
             polygonObjects = new List<Polygon>();
+            triangleobjects = new List<Triangle>();
 
             c = Color.Black;
 
-         
+
         }
         Color c;
         Point point; //defines points 
@@ -78,9 +87,10 @@ namespace GPLA
             AbstractFactory shapeFactory = FactoryProducer.getFactory("Shape");
             shape1 = shapeFactory.getShape("Circle");
             shape2 = shapeFactory.getShape("Rectangle");
+            shape3 = shapeFactory.getShape("Polygon");
         }
 
-       
+
         private void pbOutput_Click(object sender, EventArgs e)
         {
 
@@ -92,11 +102,11 @@ namespace GPLA
         }
 
 
-     /// <summary>
-     /// Save commands into text file
-     /// </summary>
-     /// <param name="sender">reference object</param>
-     /// <param name="e">event data</param>
+        /// <summary>
+        /// Save commands into text file
+        /// </summary>
+        /// <param name="sender">reference object</param>
+        /// <param name="e">event data</param>
         private void sAVEToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -122,7 +132,7 @@ namespace GPLA
 
         private void txt_ActionCmd_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
 
             {
                 e.SuppressKeyPress = true;
@@ -131,108 +141,100 @@ namespace GPLA
                 if (v.check_command(actionCmd))
                 {
 
-                    String program; //string to hold textarea info
-                    String[] words; //words of the individual program
-                    String[] lines = rtxt_code.Text.Trim().ToLower().Split(new String[] { Environment.NewLine },
-                                StringSplitOptions.None);
-                    foreach (string line in lines)
-                    {
-                        //c1.cjec(line);
-                        //c1.cjec(line);
-                    }
                     switch (actionCmd)
                     {
                         case "run":
 
                             try
                             {
-
-                                program = rtxt_code.Text;
-
+                                counter = 0;
+                                string[] lines = rtxt_code.Text.Trim().ToLower().Split(new string[] { Environment.NewLine },
+                                StringSplitOptions.None);
                                 bool simple_draw = true;
-                                char[] delimiters = new char[] { '\r', '\n' };
-                                string[] parts = program.Split(delimiters, StringSplitOptions.RemoveEmptyEntries); //holds invididuals code line
-                                console_text = "Program code: \n";
-                                foreach (string part in parts)
-                                {
-                                    console_text += part + "\n";
-                                }
-                                console_text += "\n\n";
-
-
+                                int single_if_break = 0;
                                 //loop 
-                                for (int i = 0; i < parts.Length; i++)
+                                foreach (string code_line in lines)
                                 {
-
-                                    //single code line
-                                    String code_line = parts[i];
-                                    counter += 1;
-
-                                    if (code_line.Contains("endloop") || code_line.Contains("endif") || code_line.Contains("endmethod"))
+                                    string hi = code_line;
+                                    //single code line                                    
+                                    counter++;
+                                    if (code_line.StartsWith("endloop") || code_line.StartsWith("endif") || code_line.StartsWith("endmethod"))
                                     {
                                         simple_draw = true;
+                                        continue;
                                     }
 
                                     if (simple_draw)
                                     {
-                                        if (v.checkprogram_command(code_line)){
-                                            draw_basic(code_line);
+                                        string[] cmd = code_line.Split(' ');
+                                        if (comms.Contains(cmd[0]))
+                                        {
+                                            if (v.checkprogram_command(code_line, this))
+                                            {
+                                                draw_basic(code_line);
+                                            }
+
                                         }
-                                        
+                                    }
+                                    if (code_line.StartsWith("then"))
+                                    {
+                                        single_if_break = counter + 1;
+                                        continue;
                                     }
 
-                                        if ((code_line.Contains("if") && !code_line.Contains("endif")) || (code_line.Contains("loop") && code_line.Contains("for")) || code_line.Contains("method") || code_line.Contains("=") || (code_line.Contains("+") || code_line.Contains("-") || code_line.Contains("*") || code_line.Contains("/")))
+                                    if (code_line.StartsWith("if"))
+                                    {
+                                        simple_draw = false;
+                                        if (v.checkprogram_command(code_line, this))
                                         {
-                                            if (code_line.Contains("if"))
-                                            {
-                                            simple_draw = false;
-                                                if (v.checkprogram_command(code_line))
-                                                {
-                                                    cmds.run_if_command(code_line, lines, counter,this);
-                                                }
 
-                                            }
-                                            else if ((code_line.Contains("loop") && code_line.Contains("for")))
-                                            {
-                                            simple_draw = false;
-                                            if (v.checkprogram_command(code_line))
-                                                {
-                                                    cmds.run_loop_command(code_line, lines, counter, this);
-                                                }
-
-                                            }
-                                            else if (code_line.Contains("method"))
-                                            {
-                                            simple_draw = false;
-                                            if (v.checkprogram_command(code_line))
-                                                {
-                                                    cmds.run_method_command(code_line, lines, counter);
-                                                }
-
-                                            }
-                                            else if((code_line.Contains("+") || code_line.Contains("-") || code_line.Contains("*") || code_line.Contains("/")))
-                                            {
-                                                if (v.checkprogram_command(code_line))
-                                                {
-                                                    cmds.runVariableOperation(code_line);
-                                                }
-                                            }
-                                            else if (code_line.Contains("="))
-                                            {
-                                                if (v.checkprogram_command(code_line))
-                                                {
-                                                    cmds.run_variable_command(code_line);
-                                                }
-                                            }
-                                            else if(code_line.Contains("(") && code_line.Contains(")"))
-                                            {
-                                                if (v.checkprogram_command(code_line))
-                                                {
-                                                    cmds.run_method_call(code_line, this);
-                                                }
-                                            }
+                                            cmds.run_if_command(code_line, lines, counter, this);
                                         }
-                                        
+                                    }
+                                    else if ((code_line.StartsWith("loop") && code_line.Contains("for")))
+                                    {
+                                        simple_draw = false;
+                                        if (v.checkprogram_command(code_line, this))
+                                        {
+                                            cmds.run_loop_command(code_line, lines, counter, this);
+                                        }
+
+                                    }
+                                    else if (code_line.StartsWith("method"))
+                                    {
+                                        simple_draw = false;
+                                        if (v.checkprogram_command(code_line, this))
+                                        {
+                                            cmds.run_method_command(code_line, lines, counter);
+                                        }
+
+                                    }
+                                    else if ((code_line.Contains("+") || code_line.Contains("-") || code_line.Contains("*") || code_line.Contains("/")))
+                                    {
+                                        if (v.checkprogram_command(code_line, this))
+                                        {
+                                            cmds.runVariableOperation(code_line);
+                                        }
+                                    }
+                                    else if (code_line.Contains("=") && !code_line.Contains("if"))
+                                    {
+                                        if (v.checkprogram_command(code_line, this))
+                                        {
+                                            cmds.run_variable_command(code_line);
+                                        }
+                                    }
+                                    else if (code_line.Contains("(") && code_line.Contains(")"))
+                                    {
+                                        if (v.checkprogram_command(code_line, this))
+                                        {
+                                            cmds.run_method_call(code_line, this);
+                                        }
+                                    }
+
+                                    if (single_if_break == counter)
+                                    {
+                                        simple_draw = true;
+                                    }
                                 }
                             }
                             catch (IndexOutOfRangeException ex)
@@ -254,11 +256,12 @@ namespace GPLA
                             rectangleObjects.Clear();
                             moveObjects.Clear();
                             polygonObjects.Clear();
+                            triangleobjects.Clear();
                             this.drawCircle = false;
                             this.drawRect = false;
-                            this.drawPolgon = false;
+                            this.drawPolygon = false;
                             this.drawLine = false;
-
+                            this.drawTriangle = false;
                             panel_output.Refresh();
                             fill = false;
                             break;
@@ -280,17 +283,22 @@ namespace GPLA
                     MessageBox.Show("put the command 'run' to run the program \n" +
 "put the command 'reset' to put on 0,0 axis \n" +
 "put the command 'clear' to clear  the panel");
-                    
+
                 }
 
-                
+
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code_line"></param>
         public void draw_basic(string code_line)
-        {            
+        {
+            variable = Commands.getVariables();
             string[] words = code_line.Trim().Split(' ');
-            if (code_line.Contains("circle") || code_line.Contains("rectangle") || code_line.Contains("triangle") || code_line.Contains("pen") || code_line.Contains("moveto") || code_line.Contains("drawto") || code_line.Contains("fill"))
+            if (code_line.Contains("circle") || code_line.Contains("rectangle") || code_line.Contains("triangle") || code_line.Contains("pen") || code_line.Contains("moveto") || code_line.Contains("drawto") || code_line.Contains("fill") || code_line.Contains("polygon"))
             {
 
                 if (words[0] == "circle")
@@ -306,12 +314,23 @@ namespace GPLA
                         Circle circle = new Circle();
                         circle.setX(moveX);
                         circle.setY(moveY);
-                        circle.setRadius(Convert.ToInt32(words[1]));
+                        int radius = 0;
+                        //circle radius
+                        if (!Regex.IsMatch(words[1], @"^[0-9]+$"))
+                        {
+                            variable.TryGetValue(words[1], out radius);
+                        }
+                        else
+                        {
+                            radius = Convert.ToInt32(words[1]);
+                        }
+                        circle.setRadius(radius);
                         circle.setColor(c);
                         circle.setFill(fill);
                         circleObjects.Add(circle);
                         drawCircle = true;
                         console_text += "Adding new circle\n\n";
+
 
                     }
                 }
@@ -329,8 +348,26 @@ namespace GPLA
                         line.setColor(c);
                         line.setX1(moveX);
                         line.setY1(moveY);
-                        line.setX2(Convert.ToInt32(words[1]));
-                        line.setY2(Convert.ToInt32(words[2]));
+                        int pointX2 = 0;
+                        int pointY2 = 0;
+                        if (!Regex.IsMatch(words[1], @"^[0-9]+$"))
+                        {
+                            variable.TryGetValue(words[1], out pointX2);
+                        }
+                        else
+                        {
+                            pointX2 = int.Parse(words[1]);
+                        }
+                        if (!Regex.IsMatch(words[2], @"^[0-9]+$"))
+                        {
+                            variable.TryGetValue(words[2], out pointY2);
+                        }
+                        else
+                        {
+                            pointY2 = int.Parse(words[2]);
+                        }
+                        line.setX2(pointX2);
+                        line.setY2(pointY2);
                         lineObjects.Add(line);
                         drawLine = true;
                         console_text += "Adding new line\n\n";
@@ -353,14 +390,34 @@ namespace GPLA
                             console_text += "!!rectangle object exists with given parameters!!\n\n";
                         }
                         else
-                        {//if not exists then creates new rectangle and add to rectangleObjects and draws rectangle
+                        {
+                            //if not exists then creates new rectangle and add to rectangleObjects and draws rectangle
                             Rectangle rect = new Rectangle();
                             rect.setX(moveX);
                             rect.setY(moveY);
                             rect.setColor(c);
                             rect.setFill(fill);
-                            rect.setHeight(Convert.ToInt32(words[1]));
-                            rect.setWidth(Convert.ToInt32(words[2]));
+                            int width = 0;
+                            int height = 0;
+                            if (!Regex.IsMatch(words[1], @"^[0-9]+$"))
+                            {
+                                variable.TryGetValue(words[1], out width);
+                            }
+                            else
+                            {
+                                width = int.Parse(words[1]);
+                            }
+
+                            if (!Regex.IsMatch(words[2], @"^[0-9]+$"))
+                            {
+                                variable.TryGetValue(words[2], out height);
+                            }
+                            else
+                            {
+                                height = int.Parse(words[2]);
+                            }
+                            rect.setHeight(height);
+                            rect.setWidth(width);
                             rectangleObjects.Add(rect);
                             drawRect = true;
                             console_text += "Adding new rectangle\n\n";
@@ -380,12 +437,76 @@ namespace GPLA
                     {
 
                         //if not exists then creates new polygon and add to polygon Objects and draws polygon
-                        Polygon poly = new Polygon();
-                        poly.set(c, fill, Convert.ToInt32(words[1]), Convert.ToInt32(words[2]), Convert.ToInt32(words[3]), moveX, moveY);
-                        polygonObjects.Add(poly);
-                        drawPolgon = true;
+                        Triangle triangle = new Triangle();
+                        int side1 = 0;
+                        int side2 = 0;
+                        int side3 = 0;
+
+                        if (!Regex.IsMatch(words[1], @"^[0-9]+$"))
+                        {
+                            variable.TryGetValue(words[1], out side1);
+                        }
+                        else
+                        {
+                            side1 = int.Parse(words[1]);
+                        }
+                        if (!Regex.IsMatch(words[2], @"^[0-9]+$"))
+                        {
+                            variable.TryGetValue(words[2], out side2);
+                        }
+                        else
+                        {
+                            side2 = int.Parse(words[2]);
+                        }
+
+                        if (!Regex.IsMatch(words[3], @"^[0-9]+$"))
+                        {
+                            variable.TryGetValue(words[3], out side3);
+                        }
+                        else
+                        {
+                            side3 = int.Parse(words[3]);
+                        }
+                        triangle.set(c, fill, side1, side2, side3, moveX, moveY);
+                        triangleobjects.Add(triangle);
+                        drawTriangle = true;
                         console_text += "Adding new Triangle\n\n";
 
+                    }
+                }
+
+                if (words[0].Equals("polygon"))
+                {
+                    if (!(words.Length > 4)) //extending parameter values
+                    {
+                        MessageBox.Show("!!Please enter correct command!! Minimum four parameters i.e. two points ");
+                        console_text += "Correct code be like: \n e.g. draw polygon 100 100 100 100  \n\n";
+                    }
+                    else
+                    {
+                        Polygon poly = new Polygon();
+                        string[] param = code_line.Trim().Split(' ');
+                        int[] points = new int[param.Length + 2];
+                        points[0] = moveX;
+                        points[1] = moveY;
+                        for (int i = 0; i < param.Length; i++)
+                        {
+                            if (!Regex.IsMatch(param[i], @"^[0-9]+$"))
+                            {
+                                if (!param[i].Equals("polygon"))
+                                {
+                                    variable.TryGetValue(param[i], out points[i + 2]);
+                                }
+                            }
+                            else
+                            {
+                                points[i + 2] = int.Parse(param[i]);
+                            }
+                        }
+                        poly.set(c, fill, points);
+                        polygonObjects.Add(poly);
+                        drawPolygon = true;
+                        console_text += "Adding new Polygon\n\n";
                     }
                 }
 
@@ -402,16 +523,35 @@ namespace GPLA
                 }
                 if (words[0] == "moveto") // condition to check if "move" then
                 {
-                    if (Convert.ToInt32(words[1]) == pbOutput.Location.X &&
-                        Convert.ToInt32(words[2]) == pbOutput.Location.Y)//checks if cursor is in different position
+                    int x = 0;
+                    int y = 0;
+                    if (!Regex.IsMatch(words[1], @"^[0-9]+$"))
+                    {
+                        variable.TryGetValue(words[1], out x);
+                    }
+                    else
+                    {
+                        x = int.Parse(words[1]);
+                    }
+                    if (!Regex.IsMatch(words[2], @"^[0-9]+$"))
+                    {
+                        variable.TryGetValue(words[2], out y);
+                    }
+                    else
+                    {
+                        y = int.Parse(words[2]);
+                    }
+
+                    if (x == pbOutput.Location.X &&
+                        y == pbOutput.Location.Y)//checks if cursor is in different position
                     {
                         //MessageBox.Show("don't move");
                         console_text += "Its in requested position\n\n";
                     }
                     else
                     {
-                        moveX = Convert.ToInt32(words[1]);
-                        moveY = Convert.ToInt32(words[2]);
+                        moveX = x;
+                        moveY = y;
                         console_text += "X=" + moveX + "\n" + "Y=" + moveY + "\n\n";
                     }
                 }
@@ -441,17 +581,8 @@ namespace GPLA
                     }
                 }
             }
-
-        
-                                    else
-                                    {
-                                        MessageBox.Show("To execute the program\n" +
-            "draw 'circle 15' or 'triangle 20 20 20'  or 'rectangle 20 40' \n" +
-            "'moveto 150 150' for changing the position\n" +
-            "'pen red' to change the colour\n" +
-            "'fill on' to fill color to the shapes");
-                                    }
-}
+            panel1.Refresh();
+        }
 
 
         /// <summary>
@@ -524,17 +655,26 @@ namespace GPLA
                 }
             }
 
-            if (drawPolgon == true)
+            if (drawTriangle == true)
+            {
+                foreach (Triangle trian in triangleobjects)
+                {
+                    console_text += "Drawing Triangle\n\n";
+                    trian.draw(g); //draw line with given graphics
+                }
+            }
+
+            if (drawPolygon == true)
             {
                 foreach (Polygon polygonObject in polygonObjects)
                 {
-                    console_text += "Drawing Line\n\n";
+                    console_text += "Drawing Polygon\n\n";
                     polygonObject.draw(g); //draw line with given graphics
                 }
             }
-         
+
         }
-       
+
 
     }
 }

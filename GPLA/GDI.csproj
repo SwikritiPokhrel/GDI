@@ -75,6 +75,7 @@
     <Compile Include="Shape.cs" />
     <Compile Include="ShapeFactory.cs" />
     <Compile Include="ShapeFactoryDefination.cs" />
+    <Compile Include="Triangle.cs" />
     <Compile Include="User_defined_exception.cs" />
     <Compile Include="Validation.cs" />
     <Compile Include="VariableDefination.cs" />

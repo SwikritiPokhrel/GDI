@@ -47,7 +47,21 @@ namespace GPLA
         /// <param name="fm"></param>
         public void run_if_command(string Draw, string[] lines, int line_found_in, frmGDI fm)
         {
+            int if_end_tag_exist = 0;
+            for (int a = line_found_in; a < lines.Length; a++)
+            {
+                if (lines[a].Equals("endif"))
+                {
+                    if_end_tag_exist++;
+                }
+            }
+            if (if_end_tag_exist == 0 && !lines[line_found_in].Equals("then"))
+            {
+                MessageBox.Show("Error: If statement not closed.");
+                return;
+            }
             operators = check.getOperator();
+            string[] comms = lines;
             string condition = Draw.Split('(', ')')[1].Trim();
             string[] splitCondition = condition.Split(new string[] {
                     operators
@@ -67,8 +81,8 @@ namespace GPLA
 
                             bool conditionStatus = false;
 
-                            int value1 = variableValue; 
-                            int value2 = conditionValue; 
+                            int value1 = variableValue;
+                            int value2 = conditionValue;
 
                             if (operators == "<=")
                             {
@@ -94,17 +108,22 @@ namespace GPLA
                             {
                                 if (value1 != value2) conditionStatus = true;
                             }
-                            
+
                             if (conditionStatus)
                             {
                                 if (lines[line_found_in].Equals("then"))
-                                {                                    
-                                   
-                                        if (check_cmd.checkprogram_command(lines[line_found_in + 1]))
+                                {
+                                    if (lines[line_found_in + 1].Contains("*") || lines[line_found_in + 1].Contains("+") || lines[line_found_in + 1].Contains("-") || lines[line_found_in + 1].Contains("/"))
+                                    {
+                                        runVariableOperation(lines[line_found_in + 1]);
+                                    }
+                                    else
+                                    {
+                                        if (check_cmd.checkprogram_command(lines[line_found_in + 1], fm))
                                         {
                                             fm.draw_basic(lines[line_found_in + 1]);
                                         }
-                                   
+                                    }
                                 }
                                 else
                                 {
@@ -113,12 +132,13 @@ namespace GPLA
                                         if (!(lines[i].Equals("endif")))
                                         {
 
-                                            if (lines[i].Contains("=")){
+                                            if (lines[i].Contains("*") || lines[i].Contains("+") || lines[i].Contains("-") || lines[i].Contains("/"))
+                                            {
                                                 runVariableOperation(lines[i]);
                                             }
                                             else
                                             {
-                                                if (check_cmd.checkprogram_command(lines[i]))
+                                                if (check_cmd.checkprogram_command(lines[i], fm))
                                                 {
                                                     fm.draw_basic(lines[i]);
                                                 }
@@ -131,8 +151,8 @@ namespace GPLA
                                         }
 
                                     }
-                                }
 
+                                }
                             }
                         }
                         else
@@ -165,37 +185,147 @@ namespace GPLA
         /// <param name="fm"></param>
         public void run_loop_command(string Draw, string[] lines, int loop_found_in_line, frmGDI fm)
         {
+            int loop_end_tag_exist = 0;
+            for (int a = loop_found_in_line; a < lines.Length; a++)
+            {
+                if (lines[a].Equals("endloop"))
+                {
+                    loop_end_tag_exist++;
+                }
+            }
+            if (loop_end_tag_exist == 0)
+            {
+                MessageBox.Show("Error: Loop not closed.");
+                return;
+            }
+
             string[] store_command = Draw.Split(new string[] { "for" }, StringSplitOptions.RemoveEmptyEntries);
-            string variable_name = store_command[1].Trim();
-            int loop_count = 0;
+            int loop_val = 0;
+            string[] loop_condition = store_command[1].Split(new string[] { "<=", ">=", "<", ">" }, StringSplitOptions.RemoveEmptyEntries);
+            string variable_name = loop_condition[0].ToLower().Trim();
+            int loopValue = int.Parse(loop_condition[1].Trim());
+            ArrayList cmds = new ArrayList();
             if (variable.ContainsKey(variable_name))
             {
-                variable.TryGetValue(variable_name, out loop_count);
+                variable.TryGetValue(variable_name, out loop_val);
 
-                for (int loop = 0; loop < loop_count; loop++)
+                for (int i = (loop_found_in_line); i < lines.Length; i++)
                 {
-                    for (int i = (loop_found_in_line); i < lines.Length; i++)
+                    if (!(lines[i].Equals("endloop")))
                     {
-                        if (!(lines[i].Equals("endloop")))
+                        cmds.Add(lines[i]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (store_command[1].Contains("<="))
+                {
+                    if (loop_val >= loopValue)
+                    {
+                        MessageBox.Show("Variable " + variable_name + " should be smaller than " + loopValue);
+                        return;
+                    }
+                    while (loop_val <= loopValue)
+                    {
+                        foreach (string cmd in cmds)
                         {
 
-                            if (lines[i].Contains("=")){
-                                runVariableOperation(lines[i]);
+                            if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
+                            {
+                                runVariableOperation(cmd);
                             }
                             else
                             {
-                                if (check_cmd.checkprogram_command(lines[i]))
+                                if (check_cmd.checkprogram_command(cmd, fm))
                                 {
-                                    fm.draw_basic(lines[i]);
+                                    fm.draw_basic(cmd);
                                 }
                             }
 
                         }
-                        else
-                        {
-                            break;
-                        }
+                        variable.TryGetValue(variable_name, out loop_val);
+                    }
+                }
+                else if (store_command[1].Contains(">="))
+                {
+                    if (loop_val <= loopValue)
+                    {
+                        MessageBox.Show("Variable " + variable_name + " should be greater than " + loopValue);
+                        return;
+                    }
+                    while (loop_val >= loopValue)
+                    {
 
+                        foreach (string cmd in cmds)
+                        {
+                            if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
+                            {
+                                runVariableOperation(cmd);
+                            }
+                            else
+                            {
+                                if (check_cmd.checkprogram_command(cmd, fm))
+                                {
+                                    fm.draw_basic(cmd);
+                                }
+                            }
+                        }
+                        variable.TryGetValue(variable_name, out loop_val);
+                    }
+                }
+                else if (store_command[1].Contains(">"))
+                {
+                    if (loop_val < loopValue)
+                    {
+                        MessageBox.Show("Variable " + variable_name + " should be greater than " + loopValue);
+                        return;
+                    }
+                    while (loop_val > loopValue)
+                    {
+                        foreach (string cmd in cmds)
+                        {
+                            if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
+                            {
+                                runVariableOperation(cmd);
+                            }
+                            else
+                            {
+                                if (check_cmd.checkprogram_command(cmd, fm))
+                                {
+                                    fm.draw_basic(cmd);
+                                }
+                            }
+                        }
+                        variable.TryGetValue(variable_name, out loop_val);
+                    }
+                }
+                else if (store_command[1].Contains("<"))
+                {
+                    if (loop_val > loopValue)
+                    {
+                        MessageBox.Show("Variable " + variable_name + " should be smaller than " + loopValue);
+                        return;
+                    }
+                    while (loop_val < loopValue)
+                    {
+                        foreach (string cmd in cmds)
+                        {
+                            if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
+                            {
+                                runVariableOperation(cmd);
+                            }
+                            else
+                            {
+                                if (check_cmd.checkprogram_command(cmd, fm))
+                                {
+                                    fm.draw_basic(cmd);
+                                }
+                            }
+                        }
+                        variable.TryGetValue(variable_name, out loop_val);
                     }
                 }
             }
@@ -220,7 +350,7 @@ namespace GPLA
             ArrayList commands_inside_method = new ArrayList();
             for (int i = loop_found_in_line; i < lines.Length; i++)
             {
-                if (!lines.Equals("endmethod"))
+                if (!lines[i].Equals("endmethod"))
                 {
                     commands_inside_method.Add(lines[i]);
                 }
@@ -239,10 +369,21 @@ namespace GPLA
             }
             else
             {
-                parameter_count = 1;
-                if (parameter_count > 0)
+                if (parameter_inside_method.Length > 0)
                 {
-                    method_parameter_variables.Add(parameter_inside_method);
+                    parameter_count = 1;
+                    if (!variable.ContainsKey((string)method_parameter_variables[0]))
+                    {
+                        variable.Add((string)method_parameter_variables[0], int.Parse(parameter_inside_method));
+                    }
+                    else
+                    {
+                        variable[(string)method_parameter_variables[0]] = int.Parse(parameter_inside_method);
+                    }
+                }
+                else
+                {
+                    parameter_count = 0;
                 }
             }
             string signature = method_name + "," + parameter_count;
@@ -303,13 +444,14 @@ namespace GPLA
             methods.TryGetValue(signature, out commands);
             foreach (string cmd in commands)
             {
-                if (cmd.Contains("="))
+                if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
                 {
+
                     runVariableOperation(cmd);
                 }
                 else
                 {
-                    if (check_cmd.checkprogram_command(cmd))
+                    if (check_cmd.checkprogram_command(cmd, fm))
                     {
                         fm.draw_basic(cmd);
                     }
@@ -341,6 +483,7 @@ namespace GPLA
             {
                 variable[variable_name] = variable_value;
             }
+
         }
 
 
