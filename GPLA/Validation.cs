@@ -35,7 +35,7 @@ namespace GPLA
         {
             if (cmd.Contains("if") && !cmd.Equals("endif"))
             {
-                return chk_cmd.check_if_command(cmd, fm);
+                return chk_cmd.check_if_command(cmd);
             }
             else if (cmd.Contains("circle") || cmd.Contains("rectangle") || cmd.Contains("polygon") || cmd.Contains("triangle") || cmd.Contains("pen") || cmd.Contains("moveto") || cmd.Contains("drawto") || cmd.Contains("fill"))
             {

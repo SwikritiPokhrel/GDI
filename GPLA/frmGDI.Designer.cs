@@ -29,9 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.rtxt_code = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.refresh_btn = new System.Windows.Forms.Button();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
@@ -53,9 +51,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.linkLabel4);
             this.panel1.Controls.Add(this.rtxt_code);
-            this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.refresh_btn);
             this.panel1.Controls.Add(this.linkLabel3);
             this.panel1.Controls.Add(this.linkLabel2);
@@ -67,22 +63,9 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1554, 1275);
+            this.panel1.Size = new System.Drawing.Size(1458, 767);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
-            // 
-            // linkLabel4
-            // 
-            this.linkLabel4.AutoSize = true;
-            this.linkLabel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkLabel4.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel4.Location = new System.Drawing.Point(51, 566);
-            this.linkLabel4.Name = "linkLabel4";
-            this.linkLabel4.Size = new System.Drawing.Size(152, 37);
-            this.linkLabel4.TabIndex = 22;
-            this.linkLabel4.TabStop = true;
-            this.linkLabel4.Text = "Console :";
-            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
             // 
             // rtxt_code
             // 
@@ -94,19 +77,10 @@
             this.rtxt_code.TabIndex = 21;
             this.rtxt_code.TextChanged += new System.EventHandler(this.rtxt_code_TextChanged_1);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(58, 608);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(710, 166);
-            this.textBox1.TabIndex = 20;
-            // 
             // refresh_btn
             // 
             this.refresh_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.refresh_btn.Location = new System.Drawing.Point(600, 46);
+            this.refresh_btn.Location = new System.Drawing.Point(316, 475);
             this.refresh_btn.Margin = new System.Windows.Forms.Padding(6);
             this.refresh_btn.Name = "refresh_btn";
             this.refresh_btn.Size = new System.Drawing.Size(168, 55);
@@ -132,7 +106,7 @@
             this.linkLabel2.AutoSize = true;
             this.linkLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel2.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel2.Location = new System.Drawing.Point(51, 496);
+            this.linkLabel2.Location = new System.Drawing.Point(51, 597);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(184, 37);
             this.linkLabel2.TabIndex = 17;
@@ -157,7 +131,7 @@
             this.panel_output.Location = new System.Drawing.Point(810, 111);
             this.panel_output.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel_output.Name = "panel_output";
-            this.panel_output.Size = new System.Drawing.Size(568, 663);
+            this.panel_output.Size = new System.Drawing.Size(568, 583);
             this.panel_output.TabIndex = 7;
             this.panel_output.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel_output_Paint);
             // 
@@ -175,7 +149,7 @@
             // txt_ActionCmd
             // 
             this.txt_ActionCmd.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_ActionCmd.Location = new System.Drawing.Point(244, 487);
+            this.txt_ActionCmd.Location = new System.Drawing.Point(244, 597);
             this.txt_ActionCmd.Margin = new System.Windows.Forms.Padding(6);
             this.txt_ActionCmd.Name = "txt_ActionCmd";
             this.txt_ActionCmd.Size = new System.Drawing.Size(524, 56);
@@ -193,7 +167,7 @@
             this.hELPToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1554, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(1458, 40);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -228,7 +202,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1554, 1275);
+            this.ClientSize = new System.Drawing.Size(1458, 767);
             this.Controls.Add(this.panel1);
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -261,9 +235,7 @@
         private System.Windows.Forms.ToolStripMenuItem lOADToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hELPToolStripMenuItem1;
         private System.Windows.Forms.Button refresh_btn;
-        public System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox rtxt_code;
-        private System.Windows.Forms.LinkLabel linkLabel4;
     }
 }
 

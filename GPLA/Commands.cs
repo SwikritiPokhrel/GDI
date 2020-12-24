@@ -9,7 +9,7 @@ using System.Collections;
 
 namespace GPLA
 {
-    class Commands
+    public class Commands
     {
 
         Validation check_cmd = new Validation();
@@ -45,7 +45,7 @@ namespace GPLA
         /// <param name="lines"></param>
         /// <param name="line_found_in"></param>
         /// <param name="fm"></param>
-        public void run_if_command(string Draw, string[] lines, int line_found_in, frmGDI fm)
+        public bool run_if_command(string Draw, string[] lines, int line_found_in, frmGDI fm)
         {
             int if_end_tag_exist = 0;
             for (int a = line_found_in; a < lines.Length; a++)
@@ -57,11 +57,10 @@ namespace GPLA
             }
             if (if_end_tag_exist == 0 && !lines[line_found_in].Equals("then"))
             {
-                MessageBox.Show("Error: If statement not closed.");
-                return;
+                MessageBox.Show("EndIf not found");
+                return false;
             }
             operators = check.getOperator();
-            string[] comms = lines;
             string condition = Draw.Split('(', ')')[1].Trim();
             string[] splitCondition = condition.Split(new string[] {
                     operators
@@ -115,7 +114,7 @@ namespace GPLA
                                 {
                                     if (lines[line_found_in + 1].Contains("*") || lines[line_found_in + 1].Contains("+") || lines[line_found_in + 1].Contains("-") || lines[line_found_in + 1].Contains("/"))
                                     {
-                                        runVariableOperation(lines[line_found_in + 1]);
+                                        runVariableOperation(lines[line_found_in + 1], fm);
                                     }
                                     else
                                     {
@@ -134,7 +133,7 @@ namespace GPLA
 
                                             if (lines[i].Contains("*") || lines[i].Contains("+") || lines[i].Contains("-") || lines[i].Contains("/"))
                                             {
-                                                runVariableOperation(lines[i]);
+                                                runVariableOperation(lines[i], fm);
                                             }
                                             else
                                             {
@@ -169,11 +168,14 @@ namespace GPLA
             catch (InvalidParameterException e)
             {
                 MessageBox.Show(e.Message);
+                return false;
             }
             catch (VariableNotFoundException e)
             {
                 MessageBox.Show(e.Message);
+                return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -183,7 +185,7 @@ namespace GPLA
         /// <param name="lines"></param>
         /// <param name="loop_found_in_line"></param>
         /// <param name="fm"></param>
-        public void run_loop_command(string Draw, string[] lines, int loop_found_in_line, frmGDI fm)
+        public bool run_loop_command(string Draw, string[] lines, int loop_found_in_line, frmGDI fm)
         {
             int loop_end_tag_exist = 0;
             for (int a = loop_found_in_line; a < lines.Length; a++)
@@ -196,7 +198,7 @@ namespace GPLA
             if (loop_end_tag_exist == 0)
             {
                 MessageBox.Show("Error: Loop not closed.");
-                return;
+                return false;
             }
 
             string[] store_command = Draw.Split(new string[] { "for" }, StringSplitOptions.RemoveEmptyEntries);
@@ -226,7 +228,7 @@ namespace GPLA
                     if (loop_val >= loopValue)
                     {
                         MessageBox.Show("Variable " + variable_name + " should be smaller than " + loopValue);
-                        return;
+                        return false;
                     }
                     while (loop_val <= loopValue)
                     {
@@ -235,7 +237,7 @@ namespace GPLA
 
                             if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
                             {
-                                runVariableOperation(cmd);
+                                runVariableOperation(cmd,fm);
                             }
                             else
                             {
@@ -254,7 +256,7 @@ namespace GPLA
                     if (loop_val <= loopValue)
                     {
                         MessageBox.Show("Variable " + variable_name + " should be greater than " + loopValue);
-                        return;
+                        return false;
                     }
                     while (loop_val >= loopValue)
                     {
@@ -263,7 +265,7 @@ namespace GPLA
                         {
                             if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
                             {
-                                runVariableOperation(cmd);
+                                runVariableOperation(cmd, fm);
                             }
                             else
                             {
@@ -281,7 +283,7 @@ namespace GPLA
                     if (loop_val < loopValue)
                     {
                         MessageBox.Show("Variable " + variable_name + " should be greater than " + loopValue);
-                        return;
+                        return false;
                     }
                     while (loop_val > loopValue)
                     {
@@ -289,7 +291,7 @@ namespace GPLA
                         {
                             if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
                             {
-                                runVariableOperation(cmd);
+                                runVariableOperation(cmd,fm);
                             }
                             else
                             {
@@ -307,7 +309,7 @@ namespace GPLA
                     if (loop_val > loopValue)
                     {
                         MessageBox.Show("Variable " + variable_name + " should be smaller than " + loopValue);
-                        return;
+                        return false;
                     }
                     while (loop_val < loopValue)
                     {
@@ -315,7 +317,7 @@ namespace GPLA
                         {
                             if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
                             {
-                                runVariableOperation(cmd);
+                                runVariableOperation(cmd,fm);
                             }
                             else
                             {
@@ -328,6 +330,11 @@ namespace GPLA
                         variable.TryGetValue(variable_name, out loop_val);
                     }
                 }
+                return true;
+            }
+            else
+            {
+                return false;
             }
 
         }
@@ -341,8 +348,12 @@ namespace GPLA
         /// <param name="fm"></param>
         public void run_method_command(string Draw, string[] lines, int loop_found_in_line)
         {
+            string[] command_part = Draw.Split(new string[] { "(" }, StringSplitOptions.RemoveEmptyEntries);
+            string inside_brackets = command_part[1];
+            inside_brackets = Regex.Replace(inside_brackets, @"\s+", "");
+            string cmd = command_part[0] + "(" + inside_brackets;
             //method             
-            string[] command_parts = Draw.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] command_parts = cmd.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             string method_name = command_parts[1].Trim();
             method_name = Regex.Replace(method_name, @"\s+", "");
             int parameter_count = 0;
@@ -372,14 +383,7 @@ namespace GPLA
                 if (parameter_inside_method.Length > 0)
                 {
                     parameter_count = 1;
-                    if (!variable.ContainsKey((string)method_parameter_variables[0]))
-                    {
-                        variable.Add((string)method_parameter_variables[0], int.Parse(parameter_inside_method));
-                    }
-                    else
-                    {
-                        variable[(string)method_parameter_variables[0]] = int.Parse(parameter_inside_method);
-                    }
+                    method_parameter_variables.Add(parameter_inside_method);
                 }
                 else
                 {
@@ -424,9 +428,9 @@ namespace GPLA
             }
             else
             {
-                parameter_count = 1;
-                if (parameter_count > 0)
+                if (parameter_inside_method.Length > 0)
                 {
+                    parameter_count = 1;
                     if (!variable.ContainsKey((string)method_parameter_variables[0]))
                     {
                         variable.Add((string)method_parameter_variables[0], int.Parse(parameter_inside_method));
@@ -435,6 +439,10 @@ namespace GPLA
                     {
                         variable[(string)method_parameter_variables[0]] = int.Parse(parameter_inside_method);
                     }
+                }
+                else
+                {
+                    parameter_count = 0;
                 }
             }
             string signature = methodname.Trim() + "," + parameter_count;
@@ -447,7 +455,7 @@ namespace GPLA
                 if (cmd.Contains("*") || cmd.Contains("+") || cmd.Contains("-") || cmd.Contains("/"))
                 {
 
-                    runVariableOperation(cmd);
+                    runVariableOperation(cmd,fm);
                 }
                 else
                 {
@@ -471,7 +479,7 @@ namespace GPLA
         /// 
         /// </summary>
         /// <param name="Draw"></param>
-        public void run_variable_command(string Draw)
+        public bool run_variable_command(string Draw)
         {
             string variable_name = Draw.Split('=')[0].Trim();
             int variable_value = int.Parse(Draw.Split('=')[1].Trim());
@@ -483,11 +491,11 @@ namespace GPLA
             {
                 variable[variable_name] = variable_value;
             }
-
+            return true;
         }
 
 
-        public bool runVariableOperation(string line)
+        public bool runVariableOperation(string line, frmGDI fm)
         {
 
             try
@@ -545,7 +553,7 @@ namespace GPLA
             }
             catch (VariableNotFoundException e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show("The variable is not found");
                 return false;
             }
         }

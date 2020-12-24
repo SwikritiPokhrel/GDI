@@ -78,12 +78,12 @@ namespace GPLA
             }
             catch (InvalidVariableNameException e)
             {
-                errors.Add(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
             catch (FormatException)
             {
-                errors.Add("Variable value should be in number format.");
+                MessageBox.Show("Variable value should be in number format.");
                 return false;
             }
         }
@@ -111,7 +111,7 @@ namespace GPLA
             }
             catch (InvalidCommandException e)
             {
-                errors.Add(e.Message);  /// message box
+                MessageBox.Show(e.Message);  /// message box
                 return false;
             }
         }
@@ -121,7 +121,7 @@ namespace GPLA
         /// </summary>
         /// <param name="command">command to be checked</param>
         /// <returns>true if command is valid else false</returns>
-        public bool check_if_command(string command, frmGDI fm)
+        public bool check_if_command(string command)
         {
             command = Regex.Replace(command, @"\s+", "");
             string[] command_parts = command.Trim().Split(new string[] { "(" }, StringSplitOptions.RemoveEmptyEntries);
@@ -191,6 +191,7 @@ namespace GPLA
                 MessageBox.Show(e.Message);
                 return false;
             }
+
         }
 
         /// <summary>
@@ -269,7 +270,11 @@ namespace GPLA
         /// <returns>true if command is valid else false</returns>
         public bool check_method(string command)
         {
-            string[] command_parts = command.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            string[] command_part = command.Split(new string[] { "(" }, StringSplitOptions.RemoveEmptyEntries);
+            string inside_brackets = command_part[1];
+            inside_brackets = Regex.Replace(inside_brackets, @"\s+", "");
+            string cmd = command_part[0] + "(" + inside_brackets;
+            string[] command_parts = cmd.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             string parameter_inside_method = "";
             try
             {
@@ -397,6 +402,15 @@ namespace GPLA
                 MessageBox.Show(e.Message);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ArrayList getError()
+        {
+            return errors;
         }
     }
 }

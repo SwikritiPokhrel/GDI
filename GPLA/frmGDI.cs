@@ -30,6 +30,8 @@ namespace GPLA
         List<Polygon> polygonObjects;
         List<MoveDirection> moveObjects;
 
+        check chk = new check();
+        
 
         Circle circle; //declaration 
         Rectangle rectangle;
@@ -162,6 +164,11 @@ namespace GPLA
                                 StringSplitOptions.None);
                                 bool simple_draw = true;
                                 int single_if_break = 0;
+                                if (String.IsNullOrEmpty(rtxt_code.Text))
+                                {
+                                    MessageBox.Show("The text field is empty");
+                                }
+                                
                                 //loop 
                                 foreach (string code_line in lines)
                                 {
@@ -234,7 +241,7 @@ namespace GPLA
                                     {
                                         if (v.checkprogram_command(code_line, this))
                                         {
-                                            cmds.runVariableOperation(code_line);
+                                            cmds.runVariableOperation(code_line,this);
                                         }
                                     }
                                     else if (code_line.Contains("=") && !code_line.Contains("if"))
@@ -257,6 +264,9 @@ namespace GPLA
                                         simple_draw = true;
                                     }
                                 }
+                                
+                                 
+                                
                             }
                             catch (IndexOutOfRangeException ex)
                             {
